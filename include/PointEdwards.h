@@ -264,8 +264,6 @@ PointEdwards & operator *(BigNum &k,PointEdwards & P)
 				}
 			}
 		}
-		lastindex=index;
-		
 		
 	}
 	avoid_memory_leak(P);
