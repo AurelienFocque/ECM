@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1463522644 source:c:\users\aurélien\desktop\programmes\lenstra c++\main.cpp
+	<iostream>
+	"BigNum.h"
+	"PointEdwards.h"
+	"CourbeEdwards.h"
+	<math.h>
+
+1441738417 source:c:\users\aurélien\desktop\programmes\lenstra c++\src\bignum.cpp
+	"BigNum.h"
+
+1460663103 c:\users\aurélien\desktop\programmes\lenstra c++\include\bignum.h
+	"gmp.h"
+	<iostream>
+
+1441738869 source:c:\users\aurélien\desktop\programmes\lenstra c++\src\courbeedwards.cpp
+	"CourbeEdwards.h"
+
+1447779585 c:\users\aurélien\desktop\programmes\lenstra c++\include\courbeedwards.h
+	"gmp.h"
+	"PointEdwards.h"
+	"BigNum.h"
+
+1441739185 source:c:\users\aurélien\desktop\programmes\lenstra c++\src\pointedwards.cpp
+	"PointEdwards.h"
+
+1445095190 c:\users\aurélien\desktop\programmes\lenstra c++\include\pointedwards.h
+	"gmp.h"
+	"CourbeEdwards.h"
+	"PointEdwards.h"
+	"BigNum.h"
+
