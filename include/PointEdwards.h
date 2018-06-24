@@ -7,8 +7,8 @@ class PointEdwards;
 void avoid_memory_leak(PointEdwards&P);
 class PointEdwards
 {
-    public:
-	char resultat;
+  public:
+		char resultat;
     CourbeEdwards c;
     BigNum x;
     BigNum y;
@@ -17,36 +17,37 @@ class PointEdwards
     PointEdwards(CourbeEdwards & c){x=0;y=1;erreur=1;c=c;resultat=0;};
     PointEdwards(BigNum &u,BigNum &v){x=u;y=v;erreur=1;resultat=0;};
     PointEdwards(PointEdwards&P){*this=P;resultat=0;}
-	~PointEdwards(){}
+		~PointEdwards(){}
     friend PointEdwards & operator +(PointEdwards & Q,PointEdwards & P);
     //friend void operator +=(PointEdwards & P);
     void operator =(PointEdwards & P)
     {
-        this->x=P.x;
-        this->y=P.y;
-        this->c=P.c;
-        this->erreur=P.erreur;
+      this->x=P.x;
+      this->y=P.y;
+      this->c=P.c;
+      this->erreur=P.erreur;
     	avoid_memory_leak(P);
     };
-	bool operator ==(PointEdwards & P)
+		bool operator ==(PointEdwards & P)
     {
-		bool ret=this->x==P.x && this->y==P.y && this->erreur==P.erreur;
-		avoid_memory_leak(*this);		      	
+			bool ret=this->x==P.x && this->y==P.y && this->erreur==P.erreur;
+			avoid_memory_leak(*this);		      	
     	avoid_memory_leak(P);
-		return ret;
+			return ret;
     };
     friend PointEdwards & operator *(int k,PointEdwards& P);
     void operator +=(PointEdwards & P)
     {
         if(this->erreur!=1)
         {   
-			avoid_memory_leak(P);
-			return;
+					avoid_memory_leak(P);
+					return;
         }
         if(P.erreur!=1)
-        {   this->erreur=P.erreur;
-			avoid_memory_leak(P);
-            return ;
+        {   
+        	this->erreur=P.erreur;
+					avoid_memory_leak(P);
+          return ;
         }
 		
         BigNum b1;
@@ -69,35 +70,33 @@ class PointEdwards
         }
         else
         {
-            if(gcd(tmp1,this->c.Modulo)==1)
-            {this->erreur=gcd(tmp2,this->c.Modulo);
-            this->erreur=(this->erreur)%(this->c.Modulo);
+          if(gcd(tmp1,this->c.Modulo)==1)
+          {
+          	this->erreur=gcd(tmp2,this->c.Modulo);
+          	this->erreur=(this->erreur)%(this->c.Modulo);
 
-            }
-            if(gcd(tmp2,this->c.Modulo)==1)
-            {this->erreur=gcd(tmp1,this->c.Modulo);
-            this->erreur=(this->erreur)%(this->c.Modulo);
-            }
+          }
+          if(gcd(tmp2,this->c.Modulo)==1)
+          {
+          	this->erreur=gcd(tmp1,this->c.Modulo);
+          	this->erreur=(this->erreur)%(this->c.Modulo);
+          }
         }
         x_res= x_res * tmp1;
         y_res= y_res * tmp2;
-
-
         x_res= x_res % this->c.Modulo;
-
-
         y_res=(this->y)*(P.y);
         y_res=y_res-(P.x)*(this->x);
         y_res=y_res*tmp2;
         y_res=y_res % this->c.Modulo;
         this->x=x_res;
         this->y=y_res;
-		avoid_memory_leak(P);
+				avoid_memory_leak(P);
         return ;
     };
     void afficher()
     {
-        gmp_printf("Point ( %Zd , %Zd ) erreur %Zd\n",this->x.x,this->y.x,this->erreur.x);
+			gmp_printf("Point ( %Zd , %Zd ) erreur %Zd\n",this->x.x,this->y.x,this->erreur.x);
     };
     protected:
     private:
@@ -105,97 +104,104 @@ class PointEdwards
 
 PointEdwards &operator +(PointEdwards & Q,PointEdwards & P)
 {
-    if(Q.erreur!=1)
-    {   PointEdwards *res =new PointEdwards();
-        res->erreur=Q.erreur;
+  if(Q.erreur!=1)
+  {   
+  	PointEdwards *res =new PointEdwards();
+    res->erreur=Q.erreur;
 		avoid_memory_leak(P);
 		avoid_memory_leak(Q);
 		res->resultat=1;
-        return *res;
-    }
-    if(P.erreur!=1)
-    {   PointEdwards *res =new PointEdwards();
-        res->erreur=P.erreur;
+    return *res;
+  }
+  if(P.erreur!=1)
+  {   
+  	PointEdwards *res =new PointEdwards();
+    res->erreur=P.erreur;
 		avoid_memory_leak(P);
 		avoid_memory_leak(Q);
 		res->resultat=1;
-        return *res;
+    return *res;
+  }
+  BigNum b1;
+  b1=1;
+  BigNum x_res;
+  BigNum y_res;
+  BigNum tmp;
+  BigNum tmp1;
+  BigNum tmp2;
+  x_res=(Q.x)*P.y;
+  x_res=x_res + (Q.y)*P.x;
+  tmp= ((Q.c.d)*(P.x)*(P.y)*(Q.x)*(Q.y));
+  tmp1=tmp+1;
+  tmp1=tmp1%Q.c.Modulo;
+  tmp2=b1-tmp;
+  tmp2=tmp2%Q.c.Modulo;
+  if(gcd(tmp1,Q.c.Modulo)==1&&gcd(tmp2,Q.c.Modulo)==1)
+  {
+  	tmp1.inverse(Q.c.Modulo);
+  	tmp2.inverse(Q.c.Modulo);
+  }
+  else
+  {   
+  	PointEdwards *res= new PointEdwards(x_res,y_res);
+    if(gcd(tmp1,Q.c.Modulo)==1)
+    {
+    	res->erreur=gcd(tmp2,Q.c.Modulo);
+    	res->erreur=(res->erreur)%(Q.c.Modulo);
+    	res->c=Q.c;
     }
-    BigNum b1;
-    b1=1;
-    BigNum x_res;
-    BigNum y_res;
-    BigNum tmp;
-    BigNum tmp1;
-    BigNum tmp2;
-    x_res=(Q.x)*P.y;
-    x_res=x_res + (Q.y)*P.x;
-    tmp= ((Q.c.d)*(P.x)*(P.y)*(Q.x)*(Q.y));
-    tmp1=tmp+1;
-    tmp1=tmp1%Q.c.Modulo;
-    tmp2=b1-tmp;
-    tmp2=tmp2%Q.c.Modulo;
-    if(gcd(tmp1,Q.c.Modulo)==1&&gcd(tmp2,Q.c.Modulo)==1){
-    tmp1.inverse(Q.c.Modulo);
-    tmp2.inverse(Q.c.Modulo);
-    }
-    else
-    {   PointEdwards *res= new PointEdwards(x_res,y_res);
-        if(gcd(tmp1,Q.c.Modulo)==1)
-        {res->erreur=gcd(tmp2,Q.c.Modulo);
-        res->erreur=(res->erreur)%(Q.c.Modulo);
-        res->c=Q.c;
-        }
-        if(gcd(tmp2,Q.c.Modulo)==1)
-        {res->erreur=gcd(tmp1,Q.c.Modulo);
-        res->erreur=(res->erreur)%(Q.c.Modulo);
-        res->c=Q.c;}
+    if(gcd(tmp2,Q.c.Modulo)==1)
+    {
+    	res->erreur=gcd(tmp1,Q.c.Modulo);
+    	res->erreur=(res->erreur)%(Q.c.Modulo);
+    	res->c=Q.c;}
 		avoid_memory_leak(P);
 		avoid_memory_leak(Q);
 		res->resultat=1;
-        return *res;
-    }
-    x_res= x_res * tmp1;
-    x_res= x_res % Q.c.Modulo;
-    y_res=(Q.y)*(P.y);
-    y_res=y_res-(P.x)*(Q.x);
-    y_res=y_res*tmp2;
-    y_res=y_res % Q.c.Modulo;
-    PointEdwards *res= new PointEdwards(x_res,y_res);
-    res->c=Q.c;
-    res->erreur=(res->erreur)%(Q.c.Modulo);
+    return *res;
+  }
+  x_res= x_res * tmp1;
+  x_res= x_res % Q.c.Modulo;
+  y_res=(Q.y)*(P.y);
+  y_res=y_res-(P.x)*(Q.x);
+  y_res=y_res*tmp2;
+  y_res=y_res % Q.c.Modulo;
+  PointEdwards *res= new PointEdwards(x_res,y_res);
+  res->c=Q.c;
+  res->erreur=(res->erreur)%(Q.c.Modulo);
 	avoid_memory_leak(P);
 	avoid_memory_leak(Q);
 	res->resultat=1;
-    return *res;
+  return *res;
 };
 //#define SWi
 #ifndef SWi
 //Classic exponentiation
 PointEdwards & operator *(BigNum &k,PointEdwards & P)
-{   PointEdwards Tmp;
-    PointEdwards* Q=new PointEdwards();
-    Q->c=P.c;
-    BigNum c;
-    Tmp=P;
-    c=k;
-    while(c>0&&Q->erreur==1)
-    {   
+{   
+	PointEdwards Tmp;
+  PointEdwards* Q=new PointEdwards();
+  Q->c=P.c;
+  BigNum c;
+  Tmp=P;
+  c=k;
+  while(c>0&&Q->erreur==1)
+  {   
 		if(c%2==0)
-        {
-            Tmp+=Tmp;
-            c=c/2;
-        }
-        else
-		{
-            *Q+=Tmp;
-            c=c-1;
-        }
+    {
+      Tmp+=Tmp;
+      c=c/2;
     }
-    avoid_memory_leak(P);
+    else
+		{
+      *Q+=Tmp;
+      c=c-1;
+    }
+  }
+  avoid_memory_leak(P);
 	avoid_memory_leak(k);
-    Q->resultat=1;
-    return *Q;
+  Q->resultat=1;
+  return *Q;
 };
 #endif SWi
 #ifdef SWi
@@ -206,19 +212,19 @@ PointEdwards & operator *(BigNum &k,PointEdwards & P)
 	long size=k.size();
 	//TODO compute the optimal value according to k
 	long swblocsize=3;
-    long swlen=(1<<swblocsize)-1;
-    PointEdwards SW[swlen];
+  long swlen=(1<<swblocsize)-1;
+  PointEdwards SW[swlen];
 	SW[0]=P;
 	for (long l =1;l<swlen;l++)
 	{
 		SW[l]=SW[l-1]+P;
 	}
-    PointEdwards Tmp;
-    PointEdwards* Q=new PointEdwards();
-    Q->c=P.c;
-    BigNum c;
-    Tmp=P;
-    c=k;
+  PointEdwards Tmp;
+  PointEdwards* Q=new PointEdwards();
+  Q->c=P.c;
+  BigNum c;
+  Tmp=P;
+  c=k;
 	long index=size;
 	long lastindex=size;
 	long realblocsize;
@@ -262,19 +268,19 @@ PointEdwards & operator *(BigNum &k,PointEdwards & P)
 		
 		
 	}
-  	avoid_memory_leak(P);
+	avoid_memory_leak(P);
 	avoid_memory_leak(k);
-    Q->resultat=1;
-    return *Q;
+  Q->resultat=1;
+  return *Q;
 };
 #endif SWi
 //allows to combine operators without taking care of memory management
 void avoid_memory_leak(PointEdwards&P)
 {
-    if(P.resultat==1)
-    {
-        delete(&P);
-    }
+  if(P.resultat==1)
+  {
+    delete(&P);
+  }
 }
 
 
